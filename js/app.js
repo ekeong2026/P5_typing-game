@@ -102,7 +102,7 @@ const SafeStorage = {
     let speedHintTimer = null;
     let speedActive = false;
     let speedWordReadyForSpace = false;
-    let currentClass = 'P6A';
+    let currentClass = 'P5A';
     let currentStudent = null;       // { cls, num, name }
     let activeSkills = [];           // 當前已解鎖技能清單
     let gameStage = 1;               // 1..5 關卡循環
@@ -257,7 +257,7 @@ const SafeStorage = {
 
     // Local Storage & Stats Management
     function getStudentStats(cls, num) {
-      const key = `p6_score_${cls}_${num}`;
+      const key = `p5_score_${cls}_${num}`;
       let stats = { totalScore: 0, kills: 0, mode1Score: 0, mode2Score: 0, mode3Score: 0 };
       const val = SafeStorage.getItem(key);
       if (val) {
@@ -332,10 +332,10 @@ const SafeStorage = {
         // 經重試依然失敗，安全存入本機離線補送隊列 (FIFO 保存，不丟失)
         console.warn('雲端上傳暫時失敗，已安全移入待補送清單');
         try {
-          const rawPending = SafeStorage.getItem('p6_pending_uploads');
+          const rawPending = SafeStorage.getItem('p5_pending_uploads');
           const queue = rawPending ? JSON.parse(rawPending) : [];
           queue.push({ payload, time: Date.now() });
-          SafeStorage.setItem('p6_pending_uploads', JSON.stringify(queue.slice(-30))); // 最多保留最近30筆
+          SafeStorage.setItem('p5_pending_uploads', JSON.stringify(queue.slice(-30))); // 最多保留最近30筆
           if (typeof showPassToast === 'function') {
             showPassToast('⚠️ 網路不穩，成績已安全暫存本機，連線恢復時將自動補送！');
           }
@@ -350,7 +350,7 @@ const SafeStorage = {
       if (!url) return;
 
       try {
-        const rawPending = SafeStorage.getItem('p6_pending_uploads');
+        const rawPending = SafeStorage.getItem('p5_pending_uploads');
         if (!rawPending) return;
         const queue = JSON.parse(rawPending);
         if (!Array.isArray(queue) || queue.length === 0) return;
@@ -376,9 +376,9 @@ const SafeStorage = {
         }
 
         if (remainingQueue.length > 0) {
-          SafeStorage.setItem('p6_pending_uploads', JSON.stringify(remainingQueue));
+          SafeStorage.setItem('p5_pending_uploads', JSON.stringify(remainingQueue));
         } else {
-          SafeStorage.removeItem('p6_pending_uploads');
+          SafeStorage.removeItem('p5_pending_uploads');
         }
 
         if (anySucceeded) {
@@ -394,7 +394,7 @@ const SafeStorage = {
     }
 
     function saveStudentStats(cls, num, scoreDelta, isKill, mode, bestTime = null, wordCount = 10, weekKey = 'w6_hw1') {
-      const key = `p6_score_${cls}_${num}`;
+      const key = `p5_score_${cls}_${num}`;
       const stats = getStudentStats(cls, num);
       stats.totalScore += scoreDelta;
       if (isKill) stats.kills++;
@@ -475,7 +475,7 @@ const SafeStorage = {
     }
 
     function renderClassBarCharts() {
-      const classes = ['P6A', 'P6B', 'P6C', 'P6D', 'P6E', 'P6F'];
+      const classes = ['P5A', 'P5B', 'P5C', 'P5D', 'P5E', 'P5F'];
 
       // 1. 各班入選前 40 名人數分佈統計
       const top40Counts = {};
@@ -490,7 +490,7 @@ const SafeStorage = {
       if (chartTop40El) {
         chartTop40El.innerHTML = buildBarChartHtml(
           '📊 各班入選全級前 40 名人數分佈 (統計棒形圖)',
-          '統計 P6A 至 P6F 各班在全級前 40 名龍虎榜中所佔之傑出訓練家人數',
+          '統計 P5A 至 P5F 各班在全級前 40 名龍虎榜中所佔之傑出訓練家人數',
           top40Data,
           maxTop40,
           'linear-gradient(180deg, #60A5FA 0%, #2563EB 100%)',
@@ -645,8 +645,13 @@ const SafeStorage = {
     function renderClassCards() {
       const container = document.getElementById('class-cards');
       const students = (DATA && DATA.class_top10 && DATA.class_top10[currentClass]) ? DATA.class_top10[currentClass] : [];
-      const classOffset = ['P6A', 'P6B', 'P6C', 'P6D', 'P6E', 'P6F'].indexOf(currentClass) * 14;
+      const classOffset = ['P5A', 'P5B', 'P5C', 'P5D', 'P5E', 'P5F'].indexOf(currentClass) * 14;
       
+      if (students.length === 0) {
+        container.innerHTML = '<div style="padding:32px 16px;text-align:center;color:#64748B;font-weight:800;">🎮 此班尚未有成績紀錄</div>';
+        return;
+      }
+
       container.innerHTML = students.map((s, idx) => {
         const pm = DATA.pokemon_pool[(classOffset + idx) % DATA.pokemon_pool.length];
         let medal = '';
@@ -696,7 +701,7 @@ const SafeStorage = {
     // ==========================================
     function renderPerfectScorers() {
       const container = document.getElementById('perfect-class-groups');
-      const classes = ['P6A', 'P6B', 'P6C', 'P6D', 'P6E', 'P6F'];
+      const classes = ['P5A', 'P5B', 'P5C', 'P5D', 'P5E', 'P5F'];
       let globalCounter = 0;
       
       container.innerHTML = classes.map(cls => {
@@ -733,7 +738,7 @@ const SafeStorage = {
       const tbody = document.getElementById('vocab-tbody');
       const typos = [
         { rank: "第 1 名", char: "兔", count: "77 人次", hw: "功課3", code: "弓日戈 (NAI)", secret: "【分體字】字首「勹」取折筆【弓(N)】；字身「口」取【日(A)】，末筆撇彎鉤連點取【戈(I)】。切勿誤取「竹」或「口」！" },
-        { rank: "第 2 名", char: "術", count: "60 人次", hw: "功課4", code: "竹人戈木 (HOID)", secret: "【行部包圍】字首左側「彳」取【竹人(HO)】；字身右側「术」取【戈木(ID)】。六年級是倉頡全碼，切勿按速成只取首尾！" },
+        { rank: "第 2 名", char: "術", count: "60 人次", hw: "功課4", code: "竹人戈木 (HOID)", secret: "【行部包圍】字首左側「彳」取【竹人(HO)】；字身右側「术」取【戈木(ID)】。五年級是倉頡全碼，切勿按速成只取首尾！" },
         { rank: "第 3 名", char: "卵", count: "55 人次", hw: "功課3", code: "竹竹尸中戈 (HHSLI)", secret: "【分體字】左側首筆取撇【竹(H)】；右側撇取【竹(H)】，末筆點取【戈(I)】。" },
         { rank: "第 4 名", char: "錄", count: "54 人次", hw: "功課2", code: "金女弓水 (CVNE)", secret: "【左右分體】字首【金(C)】；字身「录」上部彑取【女弓(NV)】，下部氺取【水(E)】。" },
         { rank: "第 5 名", char: "卑", count: "54 人次", hw: "功課3", code: "竹竹十 (HHJ)", secret: "【上下分體】頂端撇筆取【竹(H)】；中間框筆取【竹(H)】，底端懸針十字取【十(J)】。" },
@@ -834,7 +839,7 @@ const SafeStorage = {
       }
       const padNum = num < 10 ? '0' + num : num;
       currentStudent = { cls, num, name: `${cls} ${padNum}號` };
-      SafeStorage.setItem('p6_last_login', JSON.stringify(currentStudent));
+      SafeStorage.setItem('p5_last_login', JSON.stringify(currentStudent));
       
       document.getElementById('identity-section').style.display = 'none';
       document.getElementById('battle-section').style.display = 'block';
@@ -850,7 +855,7 @@ const SafeStorage = {
     function switchIdentity() {
       currentStudent = null;
       activeSkills = [];
-      SafeStorage.removeItem('p6_last_login');
+      SafeStorage.removeItem('p5_last_login');
       document.getElementById('battle-section').style.display = 'none';
       document.getElementById('identity-section').style.display = 'block';
     }
@@ -1824,8 +1829,8 @@ const SafeStorage = {
 
       const allKeys = SafeStorage.getAllKeys ? SafeStorage.getAllKeys() : [];
       allKeys.forEach(key => {
-        if (key.startsWith('p6_score_')) {
-          const parts = key.replace('p6_score_', '').split('_');
+        if (key.startsWith('p5_score_')) {
+          const parts = key.replace('p5_score_', '').split('_');
           const cls = parts[0];
           const num = parseInt(parts[1], 10);
           try {
@@ -1862,7 +1867,7 @@ const SafeStorage = {
       });
 
       const classGroups = {};
-      ['P6A', 'P6B', 'P6C', 'P6D', 'P6E', 'P6F'].forEach(c => {
+      ['P5A', 'P5B', 'P5C', 'P5D', 'P5E', 'P5F'].forEach(c => {
         classGroups[c] = fullList.filter(s => s.cls === c);
         classGroups[c].forEach((item, idx) => {
           item.classRank = idx + 1;
@@ -1903,7 +1908,7 @@ const SafeStorage = {
       const limit = isClassFilter ? 15 : 20;
       const sourceList = isClassFilter ? (classGroups[currentLeaderboardFilter] || []) : fullList;
       const scoredList = sourceList.filter(s => s.score > 0);
-      const displayList = (scoredList.length > 0 ? scoredList : sourceList).slice(0, limit);
+      const displayList = scoredList.slice(0, limit);
 
       let myInDisplay = false;
       if (currentStudent) {
@@ -1942,7 +1947,7 @@ const SafeStorage = {
       if (currentStudent && !myInDisplay) {
         const myKey = `${currentStudent.cls}_${currentStudent.num}`;
         const myEntry = allMap[myKey];
-        if (myEntry && (!isClassFilter || currentStudent.cls === currentLeaderboardFilter)) {
+        if (myEntry && myEntry.score > 0 && (!isClassFilter || currentStudent.cls === currentLeaderboardFilter)) {
           const myRank = isClassFilter ? myEntry.classRank : myEntry.overallRank;
           const cutoffRank = isClassFilter ? 15 : 20;
           const targetStudent = sourceList[cutoffRank - 1];
@@ -1983,7 +1988,7 @@ const SafeStorage = {
         score = stats.totalScore || 0;
         studentName = currentStudent.name;
       } else {
-        const lastLogin = SafeStorage.getItem('p6_last_login');
+        const lastLogin = SafeStorage.getItem('p5_last_login');
         if (lastLogin) {
           try {
             const st = JSON.parse(lastLogin);
@@ -2105,12 +2110,12 @@ const SafeStorage = {
       try { renderSkillsHall(); } catch(e) { console.error('renderSkillsHall error:', e); }
       try { initSpeedWeekDropdown(); } catch(e) { console.error('initSpeedWeekDropdown error:', e); }
 
-      const lastLogin = SafeStorage.getItem('p6_last_login');
+      const lastLogin = SafeStorage.getItem('p5_last_login');
       if (lastLogin) {
         try {
           const savedStudent = JSON.parse(lastLogin);
           if (!isValidStudentIdentity(savedStudent)) {
-            SafeStorage.removeItem('p6_last_login');
+            SafeStorage.removeItem('p5_last_login');
             return;
           }
           currentStudent = savedStudent;
@@ -2687,7 +2692,7 @@ const SafeStorage = {
 
       // 儲存至本地 SafeStorage (依周次與題量獨立儲存個人最佳秒數紀錄)
       if (currentStudent) {
-        const speedKey = `p6_speed_${currentStudent.cls}_${currentStudent.num}_${currentSpeedWordCount}_${currentSpeedWeek}`;
+        const speedKey = `p5_speed_${currentStudent.cls}_${currentStudent.num}_${currentSpeedWordCount}_${currentSpeedWeek}`;
         const prev = SafeStorage.getItem(speedKey);
         let bestRecord = {
           cls: currentStudent.cls,
@@ -2715,7 +2720,7 @@ const SafeStorage = {
 
         // 向下相容舊鍵 (10字 w3)
         if (currentSpeedWordCount === 10) {
-          const prevOverall = SafeStorage.getItem(`p6_speed_${currentStudent.cls}_${currentStudent.num}`);
+          const prevOverall = SafeStorage.getItem(`p5_speed_${currentStudent.cls}_${currentStudent.num}`);
           let shouldUpdateOverall = true;
           if (prevOverall) {
             try {
@@ -2726,7 +2731,7 @@ const SafeStorage = {
             } catch (e) {}
           }
           if (shouldUpdateOverall) {
-            SafeStorage.setItem(`p6_speed_${currentStudent.cls}_${currentStudent.num}`, JSON.stringify(bestRecord));
+            SafeStorage.setItem(`p5_speed_${currentStudent.cls}_${currentStudent.num}`, JSON.stringify(bestRecord));
           }
         }
 
@@ -2776,7 +2781,7 @@ const SafeStorage = {
 
       const modalTitle = document.getElementById('lb-modal-main-title');
       if (modalTitle) {
-        modalTitle.textContent = (type === 'speed') ? '⚡ 六年級寶可夢倉頡手速天梯榜' : '🏆 六年級寶可夢倉頡討伐龍虎榜';
+        modalTitle.textContent = (type === 'speed') ? '⚡ 五年級寶可夢倉頡手速天梯榜' : '🏆 五年級寶可夢倉頡討伐龍虎榜';
       }
 
       renderLeaderboardTable();
@@ -2872,15 +2877,15 @@ const SafeStorage = {
       // 2. 從本地 SafeStorage 讀取該周次功課之真實手速紀錄 (優先採用本機最新最佳)
       const allKeys = SafeStorage.getAllKeys ? SafeStorage.getAllKeys() : [];
       allKeys.forEach(key => {
-        if (key.startsWith('p6_speed_')) {
-          const parts = key.replace('p6_speed_', '').split('_');
+        if (key.startsWith('p5_speed_')) {
+          const parts = key.replace('p5_speed_', '').split('_');
           const cls = String(parts[0] || '').trim().toUpperCase();
           const num = parseInt(parts[1], 10);
           if (!cls || isNaN(num) || num < 1 || num > 36) return;
           const recWc = parts[2] ? parseInt(parts[2], 10) : 10;
           const recWk = parts.slice(3).join('_') || 'w6_hw1';
 
-          if (recWc !== 10) return; // 六年級鎖定純10字
+          if (recWc !== 10) return; // 五年級鎖定純10字
           if (speedLeaderboardWeek !== 'ALL' && recWk !== speedLeaderboardWeek) return;
 
           try {
@@ -2959,7 +2964,7 @@ const SafeStorage = {
 
       // 分班計算班內名次 (僅限有成績者)
       const classGroups = {};
-      ['P6A', 'P6B', 'P6C', 'P6D', 'P6E', 'P6F'].forEach(c => {
+      ['P5A', 'P5B', 'P5C', 'P5D', 'P5E', 'P5F'].forEach(c => {
         classGroups[c] = speedList.filter(s => s.cls === c);
         classGroups[c].forEach((item, idx) => item.classRank = idx + 1);
       });
@@ -3060,3 +3065,4 @@ const SafeStorage = {
     if (document.readyState === 'complete' || document.readyState === 'interactive') {
       try { initSpeedWeekDropdown(); } catch(e) {}
     }
+
