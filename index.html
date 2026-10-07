@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>⚡ 六年級打字大師聯賽 · 寶可夢倉頡榮譽殿堂 🏆</title>
-  <!-- 🎨 六年級樣式表 (外置獨立模組) -->
+  <title>⚡ 五年級打字大師聯賽 · 寶可夢倉頡榮譽殿堂 🏆</title>
+  <!-- 🎨 五年級樣式表 (外置獨立模組) -->
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -64,13 +64,13 @@
       </div>
     </div>
 
-    <h1 class="title">⚡ 六年級打字大師聯賽 · <span>寶可夢倉頡榮譽殿堂</span> 🏆</h1>
+    <h1 class="title">⚡ 五年級打字大師聯賽 · <span>寶可夢倉頡榮譽殿堂</span> 🏆</h1>
     <p class="subtitle">2026/2027學年 資訊科技科 · 第 5 周倉頡打字積分榮譽盛典（雙周合併版）</p>
     
     <div class="stats-bar">
-      <div class="stat-pill">🎉 滿分訓練家：<strong>108 位同學獲得 400 分！</strong></div>
-      <div class="stat-pill">⭐ 全級平均分：<strong>93.4 分</strong></div>
-      <div class="stat-pill">⚡ 速度神捕：<strong>P6F 21號</strong> (9/14 19:45 率先交齊)</div>
+      <div class="stat-pill">🎉 滿分訓練家：<strong>尚未有紀錄</strong></div>
+      <div class="stat-pill">⭐ 全級平均分：<strong>尚未有紀錄</strong></div>
+      <div class="stat-pill">⚡ 速度神捕：<strong>尚未有紀錄</strong></div>
     </div>
   </header>
 
@@ -79,7 +79,7 @@
     <div class="tab-bar">
       <button class="tab-btn active" onclick="switchTab('top40')">🏆 全級前40名龍虎榜</button>
       <button class="tab-btn" onclick="switchTab('class')">🌟 各班前10名榮譽榜</button>
-      <button class="tab-btn" onclick="switchTab('perfect')">🎉 400分滿分星光榜 (108人)</button>
+      <button class="tab-btn" onclick="switchTab('perfect')">🎉 400分滿分星光榜 (0人)</button>
       <button class="tab-btn" onclick="switchTab('game')">🎮 倉頡野生抓寶大作戰</button>
       <button class="tab-btn" onclick="switchTab('vocab')">📖 倉頡全碼秘笈與對照表</button>
     </div>
@@ -112,12 +112,12 @@
     <!-- TAB 2: 各班前 10 名榮譽榜 (班級切換 + 角色卡片) -->
     <div class="tab-panel" id="panel-class">
       <div class="class-selector">
-        <button class="cls-chip active" onclick="switchClass('P6A')">P6A 班</button>
-        <button class="cls-chip" onclick="switchClass('P6B')">P6B 班</button>
-        <button class="cls-chip" onclick="switchClass('P6C')">P6C 班</button>
-        <button class="cls-chip" onclick="switchClass('P6D')">P6D 班</button>
-        <button class="cls-chip" onclick="switchClass('P6E')">P6E 班</button>
-        <button class="cls-chip" onclick="switchClass('P6F')">P6F 班</button>
+        <button class="cls-chip active" onclick="switchClass('P5A')">P5A 班</button>
+        <button class="cls-chip" onclick="switchClass('P5B')">P5B 班</button>
+        <button class="cls-chip" onclick="switchClass('P5C')">P5C 班</button>
+        <button class="cls-chip" onclick="switchClass('P5D')">P5D 班</button>
+        <button class="cls-chip" onclick="switchClass('P5E')">P5E 班</button>
+        <button class="cls-chip" onclick="switchClass('P5F')">P5F 班</button>
       </div>
       <div class="card-list" id="class-cards"></div>
     </div>
@@ -125,8 +125,8 @@
     <!-- TAB 3: 400分滿分星光榜 (各班滿分人數統計棒形圖 + 107人全員寶可夢卡展示) -->
     <div class="tab-panel" id="panel-perfect">
       <div style="background: #FEF3C7; border: 2px solid #FACC15; border-radius: 16px; padding: 14px 20px; margin-bottom: 16px; text-align: center;">
-        <h3 style="color: #B45309; font-size: 16px; font-weight: 900; margin-bottom: 4px;">🌟 107 位 400 分大滿貫寶可夢訓練家全員在此！</h3>
-        <p style="font-size: 13px; color: #78350F;">每一位全力以赴達成滿分的同學，都是最具毅力的大師！✨</p>
+        <h3 style="color: #B45309; font-size: 16px; font-weight: 900; margin-bottom: 4px;">🌟 尚未有 400 分滿分紀錄</h3>
+        <p style="font-size: 13px; color: #78350F;">完成挑戰後，滿分訓練家會顯示在這裏。✨</p>
       </div>
 
       <!-- 各班400分滿分人數分佈 統計棒形圖 -->
@@ -560,7 +560,7 @@
     <!-- TAB 5: 倉頡全碼秘笈與對照表 -->
     <div class="tab-panel" id="panel-vocab">
       <div style="margin-bottom: 15px;">
-        <h3 style="color: #1E3A8A; font-size: 18px; font-weight: 900; margin-bottom: 4px;">📊 六年級高頻常錯字 Top 12 排行與倉頡全碼診斷</h3>
+        <h3 style="color: #1E3A8A; font-size: 18px; font-weight: 900; margin-bottom: 4px;">📊 五年級高頻常錯字 Top 12 排行與倉頡全碼診斷</h3>
         <p style="font-size: 13px; color: #64748B;">依據第 3 周打字作業大數據統計之高頻易錯字，提供權威倉頡全碼與字根防錯指南！</p>
       </div>
       <table class="ref-table" id="vocab-table">
@@ -713,7 +713,7 @@
       <div class="modal-header-flex">
         <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
           <span style="font-size: 26px;">📊</span>
-          <h3 style="color: #1E3A8A; font-size: 20px; font-weight: 900;" id="lb-modal-main-title">🏆 六年級寶可夢倉頡討伐龍虎榜</h3>
+          <h3 style="color: #1E3A8A; font-size: 20px; font-weight: 900;" id="lb-modal-main-title">🏆 五年級寶可夢倉頡討伐龍虎榜</h3>
           <button type="button" onclick="fetchCloudLeaderboard(false)" style="background: #2563EB; color: #FFFFFF; border: none; padding: 4px 12px; border-radius: 6px; cursor: pointer; font-weight: 800; font-size: 11.5px; transition: 0.2s;" title="同步 Google 雲端試算表最新全級天梯戰況">🔄 刷新雲端最新排名</button>
         </div>
         <button class="modal-close-btn" onclick="closeModal('modal-leaderboard')">✕</button>
@@ -743,7 +743,7 @@
 
       
       <!-- ⚡ 手速榜專用子導航：題量與周次篩選器 (只在切換到手速榜時顯示) -->
-            <!-- ⚡ 手速榜專用子導航：全周次功課下拉選單 (六年級純 10 字秒數天梯) -->
+            <!-- ⚡ 手速榜專用子導航：全周次功課下拉選單 (五年級純 10 字秒數天梯) -->
       <div id="speed-lb-sub-filters" style="display: none; margin-bottom: 12px; background: #F8FAFC; border: 1.5px solid #CBD5E1; padding: 10px 14px; border-radius: 12px;">
         <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
           <div style="display: flex; align-items: center; gap: 8px;">
@@ -786,12 +786,12 @@
 
 <div class="leaderboard-filter-tabs">
         <button class="lb-filter-btn active" onclick="filterLeaderboard('ALL')">全級總榜</button>
-        <button class="lb-filter-btn" onclick="filterLeaderboard('P6A')">P6A 班</button>
-        <button class="lb-filter-btn" onclick="filterLeaderboard('P6B')">P6B 班</button>
-        <button class="lb-filter-btn" onclick="filterLeaderboard('P6C')">P6C 班</button>
-        <button class="lb-filter-btn" onclick="filterLeaderboard('P6D')">P6D 班</button>
-        <button class="lb-filter-btn" onclick="filterLeaderboard('P6E')">P6E 班</button>
-        <button class="lb-filter-btn" onclick="filterLeaderboard('P6F')">P6F 班</button>
+        <button class="lb-filter-btn" onclick="filterLeaderboard('P5A')">P5A 班</button>
+        <button class="lb-filter-btn" onclick="filterLeaderboard('P5B')">P5B 班</button>
+        <button class="lb-filter-btn" onclick="filterLeaderboard('P5C')">P5C 班</button>
+        <button class="lb-filter-btn" onclick="filterLeaderboard('P5D')">P5D 班</button>
+        <button class="lb-filter-btn" onclick="filterLeaderboard('P5E')">P5E 班</button>
+        <button class="lb-filter-btn" onclick="filterLeaderboard('P5F')">P5F 班</button>
       </div>
 
       <div style="max-height: 400px; overflow-y: auto;">
@@ -850,10 +850,11 @@
   </div>
 
   <!-- JavaScript Core -->
-  <!-- 🤖 六年級系統模組庫 (依賴順序外置載入，徹底根絕雙重維護) -->
+  <!-- 🤖 五年級系統模組庫 (依賴順序外置載入，徹底根絕雙重維護) -->
   <script src="js/config.js"></script>
   <script src="js/cangjie.js"></script>
   <script src="js/data.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
+
