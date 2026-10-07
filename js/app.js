@@ -3055,6 +3055,7 @@ const SafeStorage = {
     window.addEventListener('DOMContentLoaded', () => {
       initSpeedWeekDropdown();
       flushPendingUploads();
+      fetchCloudLeaderboard(true);
     });
 
     // 📡 監聽網路連線恢復事件 (當校園網路重新連通時自動補送成績)
