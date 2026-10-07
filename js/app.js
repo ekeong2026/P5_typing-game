@@ -494,7 +494,7 @@ const SafeStorage = {
           top40Data,
           maxTop40,
           'linear-gradient(180deg, #60A5FA 0%, #2563EB 100%)',
-          '全級前40名合計：40 人'
+          `全級前40名合計：${top40List.length} 人`
         );
       }
 
@@ -545,7 +545,9 @@ const SafeStorage = {
     }
 
     function renderTop40() {
-      const top40List = (DATA && Array.isArray(DATA.top40)) ? DATA.top40 : [];
+      const top40List = (DATA && Array.isArray(DATA.top40))
+        ? DATA.top40.map((student, index) => ({ ...student, rank: Number(student.rank) || index + 1 }))
+        : [];
       if (top40List.length < 3) {
         const podiumArea = document.getElementById('podium-area');
         if (podiumArea) {
