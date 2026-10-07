@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>⚡ 六年級打字大師聯賽 · 寶可夢倉頡榮譽殿堂 🏆</title>
+  <!-- 🎨 六年級樣式表 (外置獨立模組) -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Hero Header -->
+  <header class="hero-banner">
+    <div class="pokemon-trio">
+      <!-- Pikachu Badge -->
+      <div class="poke-avatar-badge badge-pikachu" title="皮卡丘 (Pikachu) ⚡" onclick="burstConfetti()">
+        <svg viewBox="0 0 100 100" width="46" height="46">
+          <ellipse cx="50" cy="55" rx="34" ry="30" fill="#FACC15" stroke="#333" stroke-width="2.5"/>
+          <polygon points="26,35 10,6 20,4" fill="#333"/>
+          <polygon points="26,35 20,4 35,26" fill="#FACC15" stroke="#333" stroke-width="2.5"/>
+          <polygon points="74,35 90,6 80,4" fill="#333"/>
+          <polygon points="74,35 80,4 65,26" fill="#FACC15" stroke="#333" stroke-width="2.5"/>
+          <circle cx="38" cy="52" r="4.5" fill="#333"/>
+          <circle cx="62" cy="52" r="4.5" fill="#333"/>
+          <circle cx="39.5" cy="50.5" r="1.5" fill="#FFF"/>
+          <circle cx="63.5" cy="50.5" r="1.5" fill="#FFF"/>
+          <circle cx="26" cy="62" r="6" fill="#EF4444"/>
+          <circle cx="74" cy="62" r="6" fill="#EF4444"/>
+          <polygon points="50,56 48,58 52,58" fill="#333"/>
+          <path d="M 46 62 Q 50 65 54 62" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <!-- Charmander Badge -->
+      <div class="poke-avatar-badge badge-charmander" title="小火龍 (Charmander) 🔥" onclick="burstConfetti()">
+        <svg viewBox="0 0 100 100" width="46" height="46">
+          <ellipse cx="50" cy="52" rx="34" ry="32" fill="#FB923C" stroke="#333" stroke-width="2.5"/>
+          <ellipse cx="38" cy="48" rx="4.5" ry="6.5" fill="#0284C7" stroke="#333" stroke-width="1.5"/>
+          <ellipse cx="62" cy="48" rx="4.5" ry="6.5" fill="#0284C7" stroke="#333" stroke-width="1.5"/>
+          <circle cx="39" cy="46" r="1.5" fill="#FFF"/>
+          <circle cx="63" cy="46" r="1.5" fill="#FFF"/>
+          <circle cx="47" cy="55" r="1" fill="#333"/>
+          <circle cx="53" cy="55" r="1" fill="#333"/>
+          <path d="M 43 62 Q 50 67 57 62" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <!-- Bulbasaur Badge -->
+      <div class="poke-avatar-badge badge-bulbasaur" title="妙蛙種子 (Bulbasaur) 🍃" onclick="burstConfetti()">
+        <svg viewBox="0 0 100 100" width="46" height="46">
+          <ellipse cx="50" cy="30" rx="16" ry="14" fill="#15803D" stroke="#333" stroke-width="2"/>
+          <ellipse cx="50" cy="58" rx="36" ry="28" fill="#4ADE80" stroke="#333" stroke-width="2.5"/>
+          <polygon points="24,42 16,28 32,36" fill="#15803D" stroke="#333" stroke-width="2"/>
+          <polygon points="76,42 84,28 68,36" fill="#15803D" stroke="#333" stroke-width="2"/>
+          <circle cx="36" cy="56" r="4.5" fill="#DC2626"/>
+          <circle cx="64" cy="56" r="4.5" fill="#DC2626"/>
+          <circle cx="37.5" cy="54.5" r="1.5" fill="#FFF"/>
+          <circle cx="65.5" cy="54.5" r="1.5" fill="#FFF"/>
+          <path d="M 45 68 Q 50 71 55 68" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <h1 class="title">⚡ 六年級打字大師聯賽 · <span>寶可夢倉頡榮譽殿堂</span> 🏆</h1>
+    <p class="subtitle">2026/2027學年 資訊科技科 · 第 5 周倉頡打字積分榮譽盛典（雙周合併版）</p>
+    
+    <div class="stats-bar">
+      <div class="stat-pill">🎉 滿分訓練家：<strong>108 位同學獲得 400 分！</strong></div>
+      <div class="stat-pill">⭐ 全級平均分：<strong>93.4 分</strong></div>
+      <div class="stat-pill">⚡ 速度神捕：<strong>P6F 21號</strong> (9/14 19:45 率先交齊)</div>
+    </div>
+  </header>
+
+  <!-- Navigation Bar -->
+  <div class="nav-container">
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('top40')">🏆 全級前40名龍虎榜</button>
+      <button class="tab-btn" onclick="switchTab('class')">🌟 各班前10名榮譽榜</button>
+      <button class="tab-btn" onclick="switchTab('perfect')">🎉 400分滿分星光榜 (108人)</button>
+      <button class="tab-btn" onclick="switchTab('game')">🎮 倉頡野生抓寶大作戰</button>
+      <button class="tab-btn" onclick="switchTab('vocab')">📖 倉頡全碼秘笈與對照表</button>
+    </div>
+    
+    <div class="action-tools">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" class="search-input" id="search-input" placeholder="搜尋班別/學號..." oninput="handleSearch(this.value)">
+      </div>
+      <button class="btn-action" onclick="burstConfetti()">🎊 噴彩花</button>
+      <button class="btn-action" id="kiosk-btn" onclick="toggleKioskMode()">🖥️ 投影輪播</button>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <main class="content-container">
+
+    <!-- TAB 1: 全級前 40 名龍虎榜 (頒獎台 + 統計棒形圖 + 卡片網格) -->
+    <div class="tab-panel active" id="panel-top40">
+      <!-- Top 3 Podium (Pikachu, Charmander, Bulbasaur) -->
+      <div class="podium-container" id="podium-area"></div>
+      
+      <!-- 各班入選全級前40名人數分佈 統計棒形圖 -->
+      <div id="chart-top40-container"></div>
+
+      <!-- Rank 4 to 40 List -->
+      <div class="card-list" id="top40-list"></div>
+    </div>
+
+    <!-- TAB 2: 各班前 10 名榮譽榜 (班級切換 + 角色卡片) -->
+    <div class="tab-panel" id="panel-class">
+      <div class="class-selector">
+        <button class="cls-chip active" onclick="switchClass('P6A')">P6A 班</button>
+        <button class="cls-chip" onclick="switchClass('P6B')">P6B 班</button>
+        <button class="cls-chip" onclick="switchClass('P6C')">P6C 班</button>
+        <button class="cls-chip" onclick="switchClass('P6D')">P6D 班</button>
+        <button class="cls-chip" onclick="switchClass('P6E')">P6E 班</button>
+        <button class="cls-chip" onclick="switchClass('P6F')">P6F 班</button>
+      </div>
+      <div class="card-list" id="class-cards"></div>
+    </div>
+
+    <!-- TAB 3: 400分滿分星光榜 (各班滿分人數統計棒形圖 + 107人全員寶可夢卡展示) -->
+    <div class="tab-panel" id="panel-perfect">
+      <div style="background: #FEF3C7; border: 2px solid #FACC15; border-radius: 16px; padding: 14px 20px; margin-bottom: 16px; text-align: center;">
+        <h3 style="color: #B45309; font-size: 16px; font-weight: 900; margin-bottom: 4px;">🌟 107 位 400 分大滿貫寶可夢訓練家全員在此！</h3>
+        <p style="font-size: 13px; color: #78350F;">每一位全力以赴達成滿分的同學，都是最具毅力的大師！✨</p>
+      </div>
+
+      <!-- 各班400分滿分人數分佈 統計棒形圖 -->
+      <div id="chart-perfect-container"></div>
+
+      <div id="perfect-class-groups"></div>
+    </div>
+
+    <!-- TAB 4: 倉頡野生抓寶大作戰 (方案 B 教學難點攻堅三大模式 · 1080*720 緊湊排版) -->
+    <div class="tab-panel" id="panel-game">
+
+      <!-- 浮動技能發動通知橫幅 (Skill Toast) -->
+      <div id="skill-toast" class="skill-toast">
+        <span id="skill-toast-icon">⚡</span>
+        <span id="skill-toast-text">技能發動！</span>
+      </div>
+
+      <!-- 浮動過關通知橫幅 (Stage Pass Toast) -->
+      <div id="stage-pass-toast" class="stage-pass-toast">
+        <span id="stage-pass-toast-icon">🎉</span>
+        <span id="stage-pass-toast-text">通關成功！即將進入下一關...</span>
+      </div>
+
+      <!-- 階段 1：學生身份登記卡 (下拉選單選擇班別與學號 1-36) -->
+      <div id="identity-section" class="game-box" style="display: block; text-align: center; padding: 22px 18px;">
+        <div style="font-size: 36px; margin-bottom: 6px;">🎮</div>
+        <h3 style="font-size: 17px; font-weight: 900; color: #1E3A8A; margin-bottom: 4px;">
+          歡迎來到五年級寶可夢倉頡野生原野！
+        </h3>
+        <p style="font-size: 12.5px; color: #64748B; margin-bottom: 16px;">
+          請使用下拉選單選擇你的班別與學號 (1~36) 登錄訓練家身份，系統將為你自動累計戰鬥積分與稱號！
+        </p>
+        <div style="display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <select id="login-class-select" style="padding: 7px 14px; border-radius: 20px; border: 2px solid #3B82F6; font-size: 13.5px; font-weight: 800; background: white; outline: none;">
+            <option value="P5A">P5A 班</option>
+            <option value="P5B">P5B 班</option>
+            <option value="P5C">P5C 班</option>
+            <option value="P5D">P5D 班</option>
+            <option value="P5E">P5E 班</option>
+            <option value="P5F">P5F 班</option>
+          </select>
+          <select id="login-num-select" style="padding: 7px 14px; border-radius: 20px; border: 2px solid #3B82F6; font-size: 13.5px; font-weight: 800; background: white; outline: none;">
+<option value="">-- 選擇學號 (1~36) --</option>
+            <option value="1">01 號</option>
+            <option value="2">02 號</option>
+            <option value="3">03 號</option>
+            <option value="4">04 號</option>
+            <option value="5">05 號</option>
+            <option value="6">06 號</option>
+            <option value="7">07 號</option>
+            <option value="8">08 號</option>
+            <option value="9">09 號</option>
+            <option value="10">10 號</option>
+            <option value="11">11 號</option>
+            <option value="12">12 號</option>
+            <option value="13">13 號</option>
+            <option value="14">14 號</option>
+            <option value="15">15 號</option>
+            <option value="16">16 號</option>
+            <option value="17">17 號</option>
+            <option value="18">18 號</option>
+            <option value="19">19 號</option>
+            <option value="20">20 號</option>
+            <option value="21">21 號</option>
+            <option value="22">22 號</option>
+            <option value="23">23 號</option>
+            <option value="24">24 號</option>
+            <option value="25">25 號</option>
+            <option value="26">26 號</option>
+            <option value="27">27 號</option>
+            <option value="28">28 號</option>
+            <option value="29">29 號</option>
+            <option value="30">30 號</option>
+            <option value="31">31 號</option>
+            <option value="32">32 號</option>
+            <option value="33">33 號</option>
+            <option value="34">34 號</option>
+            <option value="35">35 號</option>
+            <option value="36">36 號</option>
+          </select>
+          <button class="btn-action" onclick="submitStudentLogin()" style="background: var(--poke-blue); color: white; padding: 7px 18px;">⚡ 確認身份並開始挑戰</button>
+        </div>
+      </div>
+
+      <!-- 階段 2：正式遊戲戰鬥競技場 (已登入狀態 · 1080*720 緊湊排版) -->
+      <div id="battle-section" class="game-box" style="display: none;">
+        
+        <!-- 頂部訓練家資訊橫條 (緊湊化) -->
+        <div class="trainer-header-bar">
+          <div class="trainer-meta">
+            <div class="trainer-badge-icon" id="trainer-current-badge">🥉</div>
+            <div>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span class="trainer-name-text" id="trainer-display-name">--</span>
+                <span class="trainer-title-pill" id="trainer-display-title">🥉【新手訓練家】</span>
+              </div>
+              <div style="font-size: 11.5px; color: #64748B;">
+                累計討伐總分：<strong id="trainer-display-score" style="color: #D97706; font-size: 13px;">0</strong> 分 | 擊倒魔王：<strong id="trainer-display-kills" style="color: #2563EB;">0</strong> 隻
+              </div>
+            </div>
+          </div>
+
+          <div class="trainer-actions">
+            <button class="btn-hub btn-hub-gold" onclick="openLeaderboardModal()" title="查看討伐全級排行榜">🏆 討伐龍虎榜</button>
+            <button class="btn-hub btn-hub-purple" onclick="openSkillsModal()" title="查看勳章與解鎖技能">🎖️ 勳章技能館</button>
+            <button class="btn-hub btn-hub-gray" onclick="switchIdentity()" title="更換另一位同學登入">🔄 切換身份</button>
+          </div>
+        </div>
+
+        <!-- 5關結算面板 (第5關完成時顯示) -->
+        <div id="session-summary-box" class="session-summary-box" style="display: none;">
+          <div style="font-size: 50px; margin-bottom: 6px;">🏆</div>
+          <h3 style="font-size: 22px; font-weight: 900; color: #1E3A8A; margin-bottom: 4px;">本輪 5 關倉頡挑戰結算！</h3>
+          <p style="font-size: 13px; color: #64748B; margin-bottom: 16px;" id="summary-congrats-text">
+            表現優異！已為你儲存個人天梯積分！
+          </p>
+
+          <div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 18px; flex-wrap: wrap;">
+            <div class="stat-pill" style="background: #EFF6FF; color: #1D4ED8; border-color: #BFDBFE;">
+              🎯 本輪答對：<strong id="summary-correct-stat">5 / 5 關</strong>
+            </div>
+            <div class="stat-pill" style="background: #FEF3C7; color: #B45309; border-color: #FDE68A;">
+              ⚡ 獲取積分：<strong id="summary-earned-stat">+75 分</strong>
+            </div>
+            <div class="stat-pill" style="background: #ECFDF5; color: #047857; border-color: #A7F3D0;">
+              🎖️ 累積總分：<strong id="summary-total-stat">0 分</strong>
+            </div>
+            <div class="stat-pill" style="background: #F3E8FF; color: #7E22CE; border-color: #DDD6FE;">
+              🌟 當前境界：<strong id="summary-title-stat">新手訓練家</strong>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: center; gap: 10px;">
+            <button class="btn-action" style="background: var(--poke-blue); color: white; padding: 8px 22px; font-size: 13.5px;" onclick="startNewSession()">
+              🔄 再挑戰一輪 (5關)
+            </button>
+            <button class="btn-action" onclick="openLeaderboardModal()" style="padding: 8px 18px; font-size: 13.5px;">
+              📊 查看全級排行榜
+            </button>
+          </div>
+        </div>
+
+        <!-- 遊戲活躍進行區 -->
+        <div id="active-play-area">
+          
+          <!-- 🎮 模式 1-3 嚴格橫向排列按鈕 (消除折行、不浪費縱向空間) -->
+          <div class="mode-tab-bar">
+            <button id="mode-tab-connected" class="mode-tab-btn active" onclick="setGameMode('connected')">
+              <span>⚔️</span> 模式 1：連體字全碼突破 <span class="mode-badge-pill">1~4碼連擊</span>
+            </button>
+            <button id="mode-tab-speed" class="mode-tab-btn" onclick="setGameMode('speed')">
+              <span>⚡</span> 模式 2：倉頡極速手速賽 <span class="mode-badge-pill">10字 極速秒數天梯</span>
+            </button>
+            <button id="mode-tab-special" class="mode-tab-btn" onclick="setGameMode('special')">
+              <span>🔮</span> 模式 3：難字與複合字特訓 <span class="mode-badge-pill">X難字/複合</span>
+            </button>
+          </div>
+
+          <!-- 關卡與連擊進度橫條 (緊湊) -->
+          <div class="stage-status-bar">
+            <div class="stage-tag" id="game-stage-tag">關卡 1 / 5</div>
+            <div class="stage-tag game-combo-tag" id="game-combo-tag">連擊：0 Hit 🔥</div>
+            <div class="stage-tag game-score-tag" id="game-score-tag">本輪得分：0 分</div>
+          </div>
+
+          <!-- 目標怪物與文字字卡 (居中巨大且高度緊湊) -->
+          <div class="target-monster-badge" id="monster-icon">👾</div>
+          <div class="target-word" id="target-char">更</div>
+          <div id="target-sub-hint">
+            【連體字全碼取碼】 最多取 4 碼：首、二、三、尾碼
+          </div>
+          <div class="game-prompt" id="game-prompt">在下方野生原野中，依序捕捉完整的倉頡字根精靈球發動進攻！</div>
+
+          <!-- 模式 1 & 模式 3 標準槽位 (動態 2~4 碼) -->
+          <div class="input-slots-row" id="standard-slots-row">
+            <div class="code-slot" id="slot-1"><div class="code-slot-label" id="label-slot-1">① 首碼</div><div class="code-slot-val" id="val-1">？</div></div>
+            <div class="code-slot" id="slot-2"><div class="code-slot-label" id="label-slot-2">② 次碼</div><div class="code-slot-val" id="val-2">？</div></div>
+            <div class="code-slot" id="slot-3" style="display: none;"><div class="code-slot-label" id="label-slot-3">③ 三碼</div><div class="code-slot-val" id="val-3">？</div></div>
+            <div class="code-slot" id="slot-4" style="display: none;"><div class="code-slot-label" id="label-slot-4">④ 尾碼</div><div class="code-slot-val" id="val-4">？</div></div>
+          </div>
+
+          <!-- 模式 2 分體字專用雙區塊槽位 (【字首區】＋【字身區】) -->
+          <div class="split-slots-container" id="split-slots-row" style="display: none;">
+            <!-- 字首區 -->
+            <div class="split-slot-group prefix-group">
+              <div class="split-group-header">🔵 字首取碼 (最多2碼：首尾碼)</div>
+              <div class="split-group-slots">
+                <div class="code-slot" id="slot-pre-1"><div class="code-slot-label" id="label-pre-1">字首首碼</div><div class="code-slot-val" id="val-pre-1">？</div></div>
+                <div class="code-slot" id="slot-pre-2" style="display: none;"><div class="code-slot-label" id="label-pre-2">字首尾碼</div><div class="code-slot-val" id="val-pre-2">？</div></div>
+              </div>
+            </div>
+            <!-- 字身區 -->
+            <div class="split-slot-group body-group">
+              <div class="split-group-header">🟣 字身取碼 (最多3碼：首二尾碼)</div>
+              <div class="split-group-slots">
+                <div class="code-slot" id="slot-body-1"><div class="code-slot-label" id="label-body-1">字身首碼</div><div class="code-slot-val" id="val-body-1">？</div></div>
+                <div class="code-slot" id="slot-body-2" style="display: none;"><div class="code-slot-label" id="label-body-2">字身次碼</div><div class="code-slot-val" id="val-body-2">？</div></div>
+                <div class="code-slot" id="slot-body-3" style="display: none;"><div class="code-slot-label" id="label-body-3">字身尾碼</div><div class="code-slot-val" id="val-body-3">？</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 🎮 野生原野遊行抓寶區 (250px 高度，確保 1080*720 免滾動) -->
+          
+        <!-- ⚡ 模式 2：倉頡 10 字極速鍵盤手速賽專用競技場 -->
+        <div id="speed-arena-section" class="speed-arena-container" style="display: none;">
+          
+          <!-- 🏁 1. 備戰大廳視圖 (進入模式 2 時展示，不直接開始計時) -->
+          <div id="speed-ready-stage" style="display: block; padding: 18px 12px; text-align: center;">
+            <div style="font-size: 44px; margin-bottom: 6px;">⚡</div>
+            <h2 style="font-size: 24px; font-weight: 900; color: #38BDF8; margin-bottom: 6px; letter-spacing: 1px;">
+              模式 2：倉頡極速鍵盤手速賽
+            </h2>
+            <p style="font-size: 13px; color: #94A3B8; margin-bottom: 18px;">
+              訓練盲打反射神經 · 原生攔截 A~Z 直接敲擊 · 完全忽略作業系統中文輸入法
+            </p>
+
+            <!-- 競速配置卡片 -->
+            <div style="background: rgba(15, 23, 42, 0.75); border: 1.5px solid #334155; border-radius: 16px; padding: 18px 20px; max-width: 640px; margin: 0 auto 20px auto; box-shadow: 0 4px 16px rgba(0,0,0,0.3);">
+              <div style="display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-bottom: 14px;">
+                <!-- 題量選擇 -->
+                <div style="text-align: left;">
+                  <label style="display: block; font-size: 11.5px; font-weight: 800; color: #94A3B8; margin-bottom: 4px;">🎯 競速題量</label>
+                  <select id="speed-word-count-select" onchange="onSpeedSettingChange()" style="background: #1E293B; color: #F8FAFC; border: 1.5px solid #475569; padding: 7px 14px; border-radius: 10px; font-size: 13px; font-weight: 800; cursor: pointer;">
+                    <option value="10" selected>⚡ 10 字極速挑戰 (標準衝刺)</option>
+                  </select>
+                </div>
+
+                <!-- 周次字庫選擇 -->
+                <div style="text-align: left;">
+                  <label style="display: block; font-size: 11.5px; font-weight: 800; color: #94A3B8; margin-bottom: 4px;">📅 周次字庫</label>
+                  <select id="speed-ready-week-select" onchange="onSpeedSettingChange()" style="background: #1E293B; color: #F8FAFC; border: 1.5px solid #475569; padding: 7px 14px; border-radius: 10px; font-size: 13px; font-weight: 800; cursor: pointer;">
+                    <optgroup label="🔥 第 6 周 倉頡手速字庫 (當前進行中)">
+                      <option value="w6_hw1" selected>第6周功課1</option>
+                      <option value="w6_hw2">第6周功課2</option>
+                      <option value="w6_hw3">第6周功課3</option>
+                      <option value="w6_hw4">第6周功課4</option>
+                    </optgroup>
+                    <optgroup label="📅 第 4 周 倉頡手速字庫 (溫故知新)">
+                      <option value="w4_hw1">第4周功課1</option>
+                      <option value="w4_hw2">第4周功課2</option>
+                      <option value="w4_hw3">第4周功課3</option>
+                      <option value="w4_hw4">第4周功課4</option>
+                    </optgroup>
+                    <optgroup label="📅 第 3 周 倉頡手速字庫 (溫故知新)">
+                      <option value="w3_hw1">第3周功課1</option>
+                      <option value="w3_hw2">第3周功課2</option>
+                      <option value="w3_hw3">第3周功課3</option>
+                      <option value="w3_hw4">第3周功課4</option>
+                    </optgroup>
+                    <optgroup label="📅 第 2 周 倉頡手速字庫 (溫故知新)">
+                      <option value="w2_hw1">第2周功課1</option>
+                      <option value="w2_hw2">第2周功課2</option>
+                      <option value="w2_hw3">第2周功課3</option>
+                      <option value="w2_hw4">第2周功課4</option>
+                    </optgroup>
+                  </select>
+                </div>
+
+                <!-- 模式切換 -->
+                <div style="text-align: left;">
+                  <label style="display: block; font-size: 11.5px; font-weight: 800; color: #94A3B8; margin-bottom: 4px;">💡 提示輔助</label>
+                  <button id="speed-mode-toggle-btn" class="lb-sub-nav-btn" onclick="toggleSpeedPracticeMode()" style="font-size: 12.5px; padding: 7px 14px; background: #0F172A; color: #FDE047; border: 1.5px solid #FACC15; cursor: pointer; border-radius: 10px; font-weight: 800;" title="點擊切換競技排位賽或練習提示模式">
+                    ⚔️ 競技排位賽 (停頓3秒提燈)
+                  </button>
+                </div>
+              </div>
+
+              <!-- 規則提示說明 -->
+              <div style="background: rgba(30, 41, 59, 0.85); border-radius: 10px; padding: 12px 16px; font-size: 12px; color: #CBD5E1; line-height: 1.6; text-align: left; border: 1px solid #475569;">
+                <div style="color: #38BDF8; font-weight: 900; margin-bottom: 4px;">📋 手速競技天梯規則說明：</div>
+                <div>1. ⌨️ <strong>輸入方式</strong>：請直接敲擊英文字母鍵 (A~Z)。打完該字所有字碼後，請按<strong>【Space 空白鍵】</strong>送出並進入下一題。</div>
+                <div>2. ⏱️ <strong>失誤罰時</strong>：輸入過程按錯鍵每次即時累計 <strong>+0.3 秒</strong> 罰時。</div>
+                <div>3. ⚖️ <strong>天梯排名（秒數制）</strong>：結算時以<strong>「等效競賽總耗時（秒）」</strong>由小到大升序排名。系統依擊鍵準確率計算二次方加權罰時（100%零失誤享減秒神手獎勵，準確率越低罰時秒數激增，杜絕盲敲搶快！）。</div>
+              </div>
+            </div>
+
+            <!-- 開始挑戰按鈕 -->
+            <div style="display: flex; justify-content: center; gap: 14px; flex-wrap: wrap;">
+              <button id="speed-start-launch-btn" class="btn-action-speed-launch" onclick="launchSpeedMatch()">
+                <span>🚀</span> 開始極速挑戰！(點擊或按 Space 啟動)
+              </button>
+              <button class="btn-action-speed-lb" onclick="openLeaderboardModal('speed')">
+                <span>🏆</span> 查看手速天梯榜
+              </button>
+            </div>
+          </div>
+
+          <!-- 🏎️ 2. 進行中主舞台 (點擊開始按鈕後顯示，開始計時) -->
+          <div id="speed-main-stage" style="display: none; padding: 10px 0;">
+            <!-- 頂部資訊與控制欄 -->
+            <div class="speed-header-bar">
+              <!-- 左側：進度圓點與當前字數 -->
+              <div style="text-align: left;">
+                <div style="font-size: 11.5px; color: #94A3B8; margin-bottom: 4px;" id="speed-progress-label">
+                  🎯 競速進度：第 <strong id="speed-current-idx-text" style="color: #FACC15; font-size: 14px;">1</strong> / <span id="speed-total-count-text">10</span> 字
+                </div>
+                <div class="speed-progress-dots" id="speed-progress-dots"></div>
+              </div>
+
+              <!-- 中間：當前賽事標籤 -->
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span id="speed-active-badge-tag" style="background: #1E293B; color: #38BDF8; border: 1.5px solid #0284C7; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 800;">
+                  ⚡ 10 字賽 · 第 3 周
+                </span>
+                <button onclick="abortSpeedMatchToReady()" style="background: rgba(239, 68, 68, 0.2); color: #F87171; border: 1px solid #EF4444; border-radius: 8px; padding: 4px 10px; font-size: 11px; font-weight: 800; cursor: pointer;">
+                  ✕ 放棄重來
+                </button>
+              </div>
+
+              <!-- 右側：發光毫秒計時器 -->
+              <div>
+                <div class="speed-clock-box">
+                  <span>⏱️</span>
+                  <span id="speed-timer-val">00.00s</span>
+                </div>
+                <div class="speed-clock-penalty" id="speed-penalty-display">
+                  ⚠️ 失誤 0 次 (+0.0s 罰時)
+                </div>
+              </div>
+            </div>
+
+            <!-- 中央輸入區域 -->
+            <div style="padding: 10px 0;">
+              <div style="font-size: 13px; color: #38BDF8; font-weight: 800; letter-spacing: 1px;" id="speed-sub-notice">
+                ⚡ 請直接敲擊鍵盤英文字母 (A~Z) · 系統已完全忽略作業系統輸入法
+              </div>
+              <div class="speed-target-char-box" id="speed-target-char">最</div>
+              
+              <!-- 字碼卡槽區 -->
+              <div class="speed-slots-row" id="speed-slots-row"></div>
+              
+              <!-- ⌨️ 打完字碼後空白鍵確認送出提示列 -->
+              <div id="speed-space-prompt" class="speed-space-prompt" style="display: none;" onclick="confirmSpeedWordSpace()">
+                <span class="space-key-pill">␣ Space 空白鍵</span>
+                <span class="space-prompt-text">✨ 本字字碼已全對！按下【空白鍵】確認送出 ➔</span>
+              </div>
+
+              <div class="speed-notice-text" id="speed-bottom-tip">
+                💡 規則：按錯鍵每次加計 <strong>+0.3 秒罰時</strong> · 停頓 <strong>3 秒</strong> 未按鍵自動亮起字碼提示 · <strong>打完字碼請按【空白鍵 Space】送出</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- 🏆 3. 完成結算卡 (隱藏，完成時顯示) -->
+          <div id="speed-finish-box" style="display: none; padding: 22px; background: rgba(0,0,0,0.65); border-radius: 16px; border: 2px solid #10B981; animation: modalSlideIn 0.3s ease-out; margin-top: 15px;">
+            <div style="font-size: 50px; margin-bottom: 6px;">⚡</div>
+            <h3 style="font-size: 22px; font-weight: 900; color: #34D399; margin-bottom: 4px;" id="speed-finish-title">
+              極速鍵盤手速賽完成！
+            </h3>
+            <p style="font-size: 13px; color: #CBD5E1; margin-bottom: 16px;" id="speed-finish-sub">
+              恭喜順利完成全部字碼敲擊！以下為您的天梯結算總成績：
+            </p>
+
+            <!-- 核心指標：等效競賽總耗時 (秒) 與各項細節 -->
+            <div style="display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-bottom: 20px;">
+              <div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 12px 20px; min-width: 140px; border: 2px solid #0284C7; box-shadow: 0 0 16px rgba(2, 132, 199, 0.4);">
+                <div style="font-size: 11.5px; color: #BAE6FD; font-weight: 800;">⏱️ 等效競賽總耗時 (秒)</div>
+                <div style="font-size: 28px; font-weight: 900; color: #38BDF8;" id="speed-stat-final-time">00.00s</div>
+                <div style="font-size: 11px; color: #7DD3FC;" id="speed-stat-time-desc">天梯排名依據</div>
+              </div>
+              <div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 12px 18px; min-width: 120px;">
+                <div style="font-size: 11.5px; color: #E2E8F0; font-weight: 700;">原始碼表耗時</div>
+                <div style="font-size: 22px; font-weight: 900; color: #CBD5E1;" id="speed-stat-raw-time">00.00s</div>
+              </div>
+              <div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 12px 18px; min-width: 120px;">
+                <div style="font-size: 11.5px; color: #E2E8F0; font-weight: 700;">擊鍵準確率</div>
+                <div style="font-size: 22px; font-weight: 900; color: #34D399;" id="speed-stat-acc">100%</div>
+              </div>
+              <div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 12px 18px; min-width: 120px;">
+                <div style="font-size: 11.5px; color: #E2E8F0; font-weight: 700;">準確率二次加權罰時</div>
+                <div style="font-size: 22px; font-weight: 900; color: #F87171;" id="speed-stat-acc-penalty">+0.00s</div>
+              </div>
+              <div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 12px 18px; min-width: 120px;">
+                <div style="font-size: 11.5px; color: #E2E8F0; font-weight: 700;">等效中文字速</div>
+                <div style="font-size: 22px; font-weight: 900; color: #FACC15;" id="speed-stat-cpm">0 字/分</div>
+              </div>
+              <div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 12px 18px; min-width: 120px;">
+                <div style="font-size: 11.5px; color: #E2E8F0; font-weight: 700;">榮譽手速段位</div>
+                <div style="font-size: 17px; font-weight: 900; color: #F43F5E;" id="speed-stat-tier">⚡【閃電極速神手】</div>
+              </div>
+            </div>
+
+            <!-- 操作按鈕 -->
+            <div style="display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-top: 14px;">
+              <button class="btn-action-speed-restart" onclick="restartSpeedMatch()">
+                <span>🔄</span> 再次挑戰 (同配置全新亂序)
+              </button>
+              <button class="btn-action-speed-restart" style="background: linear-gradient(135deg, #475569 0%, #334155 100%) !important; border-color: #64748B !important;" onclick="returnToSpeedReadyStage()">
+                <span>⚙️</span> 返回備戰大廳 (更換配置)
+              </button>
+              <button class="btn-action-speed-lb" onclick="openLeaderboardModal('speed')">
+                <span>🏆</span> 查看手速天梯榜
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="capture-arena-container" id="capture-arena">
+            <div class="arena-background-grid"></div>
+            <div class="arena-watermark">⚡</div>
+            
+            <div class="arena-controls-bar">
+              <span style="font-size: 11px; font-weight: 800; color: #475569;">游行速度：</span>
+              <button class="arena-speed-btn active" id="spd-btn-gentle" onclick="setArenaSpeed(0.85, 'spd-btn-gentle')" title="標準游行速度 (1.0x 標準分)">🟢 悠閒 (1.0x)</button>
+              <button class="arena-speed-btn" id="spd-btn-fast" onclick="setArenaSpeed(1.6, 'spd-btn-fast')" title="敏捷高速游行 (1.4x 獎勵加成)">🟡 敏捷 (1.4x 獎勵)</button>
+              <button class="arena-speed-btn" id="spd-btn-static" onclick="setArenaSpeed(0, 'spd-btn-static')" title="定點靜止輔助 (0.6x 簡易得分)">⏸️ 定點 (0.6x 簡易)</button>
+            </div>
+
+            <div id="orbs-container" style="position: absolute; top:0; left:0; width:100%; height:100%;"></div>
+          </div>
+
+          <!-- 拆碼秘笈展開盒 (答案揭曉與解析) -->
+          <div class="secret-card" id="secret-box" style="display: none; margin-top: 10px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+              <span style="font-weight: 900; color: #1E3A8A; font-size: 13.5px;">💡 寶可夢倉頡拆碼秘笈：</span>
+              <span class="badge-char-pill" id="secret-char-badge">標準全碼：弓日戈 (NAI)</span>
+            </div>
+            <p style="font-size: 12.5px; color: #334155; line-height: 1.45;" id="secret-desc">
+              解析說明載入中...
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- TAB 5: 倉頡全碼秘笈與對照表 -->
+    <div class="tab-panel" id="panel-vocab">
+      <div style="margin-bottom: 15px;">
+        <h3 style="color: #1E3A8A; font-size: 18px; font-weight: 900; margin-bottom: 4px;">📊 六年級高頻常錯字 Top 12 排行與倉頡全碼診斷</h3>
+        <p style="font-size: 13px; color: #64748B;">依據第 3 周打字作業大數據統計之高頻易錯字，提供權威倉頡全碼與字根防錯指南！</p>
+      </div>
+      <table class="ref-table" id="vocab-table">
+        <thead>
+          <tr>
+            <th style="width: 70px;">名次</th>
+            <th style="width: 80px;">易錯字</th>
+            <th style="width: 100px;">錯誤人次</th>
+            <th style="width: 90px;">所屬功課</th>
+            <th style="width: 140px;">標準倉頡全碼</th>
+            <th>字形難點與倉頡拆碼診斷提示</th>
+          </tr>
+        </thead>
+        <tbody id="vocab-tbody"></tbody>
+      </table>
+
+      <!-- 24個倉頡字母與齊全輔助字形對照總表 (依據 cj-table-kel.jpg 權威校準) -->
+      <div style="margin-top: 35px; margin-bottom: 15px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+          <h3 style="color: #1E3A8A; font-size: 18px; font-weight: 900;">📘 資訊科技科：24個倉頡字母與齊全輔助字形對照表</h3>
+          <span style="background: #FEF08A; color: #854D0E; font-size: 12px; font-weight: 800; padding: 4px 12px; border-radius: 12px; border: 1px solid #FACC15;">
+            ⚡ 權威依據：倉頡輸入法標準教材 (三代/五代倉頡表)
+          </span>
+        </div>
+        <p style="font-size: 13px; color: #64748B; margin-top: 4px;">
+          倉頡輸入法將 24 個倉頡字母劃分為四大類，每個字母均包含相應的「輔助字形」（如中文字典檢字部首）。下表完整收錄全套輔助字形與教科書例字，供課堂教學與學生自我複習對照！
+        </p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 30px;">
+        
+        <!-- 哲理類 -->
+        <div style="background: white; border-radius: 16px; border: 2px solid #93C5FD; overflow: hidden; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);">
+          <div style="background: linear-gradient(135deg, #1E3A8A, #2563EB); color: white; padding: 10px 14px; font-weight: 900; font-size: 15px; display: flex; justify-content: space-between;">
+            <span>● 哲理類 (7個字母)</span>
+            <span style="font-size: 12px; opacity: 0.9;">鍵位 A ~ G</span>
+          </div>
+          <div style="padding: 10px;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+              <thead>
+                <tr style="background: #F1F5F9; color: #475569; text-align: left;">
+                  <th style="padding: 6px 8px;">字母 (鍵)</th>
+                  <th style="padding: 6px 8px;">齊全輔助字形</th>
+                  <th style="padding: 6px 8px;">常見例字</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom: 1px solid #E2E8F0;"><td style="padding: 6px 8px; font-weight: 800;">日 (A)</td><td style="padding: 6px 8px; color: #2563EB; font-weight: 700;">曰</td><td style="padding: 6px 8px; color: #64748B;">明、早、最、星、普</td></tr>
+                <tr style="border-bottom: 1px solid #E2E8F0;"><td style="padding: 6px 8px; font-weight: 800;">月 (B)</td><td style="padding: 6px 8px; color: #2563EB; font-weight: 700;">爫、夕、冂、冖</td><td style="padding: 6px 8px; color: #64748B;">朋、受、同、名、然、采</td></tr>
+                <tr style="border-bottom: 1px solid #E2E8F0;"><td style="padding: 6px 8px; font-weight: 800;">金 (C)</td><td style="padding: 6px 8px; color: #2563EB; font-weight: 700;">八、丷、儿</td><td style="padding: 6px 8px; color: #64748B;">錯、分、益、兒、公、曾</td></tr>
+                <tr style="border-bottom: 1px solid #E2E8F0;"><td style="padding: 6px 8px; font-weight: 800;">木 (D)</td><td style="padding: 6px 8px; color: #2563EB; font-weight: 700;">寸、才、十</td><td style="padding: 6px 8px; color: #64748B;">李、村、材、導、柴</td></tr>
+                <tr style="border-bottom: 1px solid #E2E8F0;"><td style="padding: 6px 8px; font-weight: 800;">水 (E)</td><td style="padding: 6px 8px; color: #2563EB; font-weight: 700;">氵、又、氺</td><td style="padding: 6px 8px; color: #64748B;">冰、江、友、取、求、泉</td></tr>
+                <tr style="border-bottom: 1px solid #E2E8F0;"><td style="padding: 6px 8px; font-weight: 800;">火 (F)</td><td style="padding: 6px 8px; color: #2563EB; font-weight: 700;">灬、⺌、小</td><td style="padding: 6px 8px; color: #64748B;">伙、焦、堂、尖、炎、照</td></tr>
+                <tr><td style="padding: 6px 8px; font-weight: 800;">土 (G)</td><td style="padding: 6px 8px; color: #2563EB; font-weight: 700;">士</td><td style="padding: 6px 8px; color: #64748B;">地、吉、志、社、城</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 筆畫類 -->
+        <div style="background: white; border-radius: 16px; border: 2px solid #FCD34D; overflow: hidden; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.08);">
+          <div style="background: linear-gradient(135deg, #B45309, #D97706); color: white; padding: 10px 14px; font-weight: 900; font-size: 15px; display: flex; justify-content: space-between;">
+            <span>● 筆畫類 (7個字母)</span>
+            <span style="font-size: 12px; opacity: 0.9;">鍵位 H ~ N</span>
+          </div>
+          <div style="padding: 10px;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+              <thead>
+                <tr style="background: #F1F5F9; color: #475569; text-align: left;">
+                  <th style="padding: 6px 8px;">字母 (鍵)</th>
+                  <th style="padding: 6px 8px;">齊全輔助字形</th>
+                  <th style="padding: 6px 8px;">常見例字</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom: 1px solid #E2E8F0;"><td style="padding: 6px 8px; font-weight: 800;">竹 (H)</td><td style="padding: 6px 8px; color: #D97706; font-weight: 700;">丿、⺮</td><td style="padding: 6px 8px; color: #64748B;">竹、笑、自、白、生、毛</td></tr>
+                <tr style="border-bottom: 1px solid #E2E8F0;"><td style="padding: 6px 8px; font-weight: 800;">戈 (I)</td><td style="padding: 6px 8px; color: #D97706; font-weight: 700;">丶、厶、广</td><td style="padding: 6px 8px; color: #64748B;">找、主、台、府、應、底</td></tr>
+                <tr style="border-bottom: 1px solid #E2E8F0;"><td style="padding: 6px 8px; font-weight: 800;">十 (J)</td><td style="padding: 6px 8px; color: #D97706; font-weight: 700;">宀、穴</td><td style="padding: 6px 8px; color: #64748B;">汁、安、空、家、針、究</td></tr>
+                <tr style="border-bottom: 1px solid #E2E8F0;"><td style="padding: 6px 8px; font-weight: 800;">大 (K)</td><td style="padding: 6px 8px; color: #D97706; font-weight: 700;">乂、ナ、疒、犭</td><td style="padding: 6px 8px; color: #64748B;">天、病、左、狗、痛、猛</td></tr>
+                <tr style="border-bottom: 1px solid #E2E8F0;"><td style="padding: 6px 8px; font-weight: 800;">中 (L)</td><td style="padding: 6px 8px; color: #D97706; font-weight: 700;">丨、亅、川、衤</td><td style="padding: 6px 8px; color: #64748B;">巾、川、被、初、申、州</td></tr>
+                <tr style="border-bottom: 1px solid #E2E8F0;"><td style="padding: 6px 8px; font-weight: 800;">一 (M)</td><td style="padding: 6px 8px; color: #D97706; font-weight: 700;">厂、工、刁</td><td style="padding: 6px 8px; color: #64748B;">旦、原、巧、石、可、刁</td></tr>
+                <tr><td style="padding: 6px 8px; font-weight: 800;">弓 (N)</td><td style="padding: 6px 8px; color: #D97706; font-weight: 700;">フ、勹、ク、乙、ㄋ、⺄</td><td style="padding: 6px 8px; color: #64748B;">引、句、包、乙、乃、風、弱</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 人體類 -->
+        <div style="background: white; border-radius: 16px; border: 2px solid #86EFAC; overflow: hidden; box-shadow: 0 4px 12px rgba(22, 163, 74, 0.08);">
+          <div style="background: linear-gradient(135deg, #15803D, #16A34A); color: white; padding: 10px 14px; font-weight: 900; font-size: 15px; display: flex; justify-content: space-between;">
+            <span>● 人體類 (4個字母)</span>
+            <span style="font-size: 12px; opacity: 0.9;">鍵位 O ~ R</span>
+          </div>
+          <div style="padding: 10px;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+              <thead>
+                <tr style="background: #F1F5F9; color: #475569; text-align: left;">
+                  <th style="padding: 6px 8px;">字母 (鍵)</th>
+                  <th style="padding: 6px 8px;">齊全輔助字形</th>
+                  <th style="padding: 6px 8px;">常見例字</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom: 1px solid #E2E8F0;"><td style="padding: 6px 8px; font-weight: 800;">人 (O)</td><td style="padding: 6px 8px; color: #16A34A; font-weight: 700;">亻、入、𠆢</td><td style="padding: 6px 8px; color: #64748B;">你、他、合、內、全、休</td></tr>
+                <tr style="border-bottom: 1px solid #E2E8F0;"><td style="padding: 6px 8px; font-weight: 800;">心 (P)</td><td style="padding: 6px 8px; color: #16A34A; font-weight: 700;">忄、匕、七</td><td style="padding: 6px 8px; color: #64748B;">快、情、北、七、化、怨</td></tr>
+                <tr style="border-bottom: 1px solid #E2E8F0;"><td style="padding: 6px 8px; font-weight: 800;">手 (Q)</td><td style="padding: 6px 8px; color: #16A34A; font-weight: 700;">扌、龵</td><td style="padding: 6px 8px; color: #64748B;">打、提、拜、看、拳、持</td></tr>
+                <tr><td style="padding: 6px 8px; font-weight: 800;">口 (R)</td><td style="padding: 6px 8px; color: #16A34A; font-weight: 700;">口</td><td style="padding: 6px 8px; color: #64748B;">唱、叫、品、器、味、台</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 字形類 -->
+        <div style="background: white; border-radius: 16px; border: 2px solid #C4B5FD; overflow: hidden; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.08);">
+          <div style="background: linear-gradient(135deg, #6D28D9, #7C3AED); color: white; padding: 10px 14px; font-weight: 900; font-size: 15px; display: flex; justify-content: space-between;">
+            <span>● 字形類 (6個字母)</span>
+            <span style="font-size: 12px; opacity: 0.9;">鍵位 S ~ Y</span>
+          </div>
+          <div style="padding: 10px;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+              <thead>
+                <tr style="background: #F1F5F9; color: #475569; text-align: left;">
+                  <th style="padding: 6px 8px;">字母 (鍵)</th>
+                  <th style="padding: 6px 8px;">齊全輔助字形</th>
+                  <th style="padding: 6px 8px;">常見例字</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom: 1px solid #E2E8F0;"><td style="padding: 6px 8px; font-weight: 800;">尸 (S)</td><td style="padding: 6px 8px; color: #7C3AED; font-weight: 700;">コ、匚、阝、卩</td><td style="padding: 6px 8px; color: #64748B;">居、局、區、巨、都、節</td></tr>
+                <tr style="border-bottom: 1px solid #E2E8F0;"><td style="padding: 6px 8px; font-weight: 800;">廿 (T)</td><td style="padding: 6px 8px; color: #7C3AED; font-weight: 700;">艹、龷</td><td style="padding: 6px 8px; color: #64748B;">花、草、共、黃、茶、英</td></tr>
+                <tr style="border-bottom: 1px solid #E2E8F0;"><td style="padding: 6px 8px; font-weight: 800;">山 (U)</td><td style="padding: 6px 8px; color: #7C3AED; font-weight: 700;">凵、屮、乚</td><td style="padding: 6px 8px; color: #64748B;">出、歲、凶、幽、逆、岳</td></tr>
+                <tr style="border-bottom: 1px solid #E2E8F0;"><td style="padding: 6px 8px; font-weight: 800;">女 (V)</td><td style="padding: 6px 8px; color: #7C3AED; font-weight: 700;">ㄑ、巛、女</td><td style="padding: 6px 8px; color: #64748B;">好、如、巡、巢、委、妹</td></tr>
+                <tr style="border-bottom: 1px solid #E2E8F0;"><td style="padding: 6px 8px; font-weight: 800;">田 (W)</td><td style="padding: 6px 8px; color: #7C3AED; font-weight: 700;">毌</td><td style="padding: 6px 8px; color: #64748B;">男、畏、果、思、甲、申、貫</td></tr>
+                <tr><td style="padding: 6px 8px; font-weight: 800;">卜 (Y)</td><td style="padding: 6px 8px; color: #7C3AED; font-weight: 700;">亠、辶、冫</td><td style="padding: 6px 8px; color: #64748B;">外、高、這、道、冰、交</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Modals -->
+  <!-- 1. 天梯榜彈窗 -->
+  <div id="modal-leaderboard" class="custom-modal-overlay" onclick="if(event.target===this)closeModal('modal-leaderboard')">
+    <div class="custom-modal-dialog custom-modal-lg">
+      <div class="modal-header-flex">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <span style="font-size: 26px;">📊</span>
+          <h3 style="color: #1E3A8A; font-size: 20px; font-weight: 900;" id="lb-modal-main-title">🏆 六年級寶可夢倉頡討伐龍虎榜</h3>
+          <button type="button" onclick="fetchCloudLeaderboard(false)" style="background: #2563EB; color: #FFFFFF; border: none; padding: 4px 12px; border-radius: 6px; cursor: pointer; font-weight: 800; font-size: 11.5px; transition: 0.2s;" title="同步 Google 雲端試算表最新全級天梯戰況">🔄 刷新雲端最新排名</button>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('modal-leaderboard')">✕</button>
+      </div>
+
+      <div class="leaderboard-my-summary" id="lb-my-summary-card">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="font-size: 32px;" id="lb-my-badge">🥉</div>
+          <div>
+            <div style="font-weight: 900; font-size: 15px; color: #1E3A8A;" id="lb-my-name">尚未登錄身份</div>
+            <div style="font-size: 12.5px; color: #64748B;" id="lb-my-title">當前境界：🥉【新手訓練家】</div>
+          </div>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-size: 11px; color: #64748B;" id="lb-my-score-label">累計討伐總分</div>
+          <div style="font-size: 22px; font-weight: 900; color: #2563EB;" id="lb-my-score">0 分</div>
+          <div style="font-size: 11px; color: #64748B;" id="lb-my-rank-label">全級討伐排名</div>
+          <div style="font-size: 12px; color: #059669; font-weight: 800;" id="lb-my-rank">尚無排名</div>
+        </div>
+      </div>
+
+      
+      <div class="lb-sub-nav-bar">
+        <button id="lb-type-score" class="lb-sub-nav-btn active" onclick="switchLeaderboardType('score')">🏆 討伐累積總分榜</button>
+        <button id="lb-type-speed" class="lb-sub-nav-btn" onclick="switchLeaderboardType('speed')">⚡ 10字極速手速榜 (秒數升序)</button>
+      </div>
+
+      
+      <!-- ⚡ 手速榜專用子導航：題量與周次篩選器 (只在切換到手速榜時顯示) -->
+            <!-- ⚡ 手速榜專用子導航：全周次功課下拉選單 (六年級純 10 字秒數天梯) -->
+      <div id="speed-lb-sub-filters" style="display: none; margin-bottom: 12px; background: #F8FAFC; border: 1.5px solid #CBD5E1; padding: 10px 14px; border-radius: 12px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 13px; font-weight: 800; color: #1E3A8A;">📅 查閱周次手速天梯榜：</span>
+            <select id="speed-lb-week-select" onchange="filterSpeedLeaderboardWeek(this.value)" style="background: #FFFFFF; color: #0F172A; border: 2px solid #2563EB; padding: 7px 14px; border-radius: 8px; font-size: 13.5px; font-weight: 800; cursor: pointer; outline: none; box-shadow: 0 2px 4px rgba(37,99,235,0.1);">
+              <optgroup label="🏆 全期生涯總覽">
+                <option value="ALL">🌟 全期 10 字個人最佳極速總榜 (生涯最佳)</option>
+              </optgroup>
+              <optgroup label="🔥 第 6 周 倉頡手速賽 (當前進行中)">
+                <option value="w6_hw1" selected>第6周功課1</option>
+                <option value="w6_hw2">第6周功課2</option>
+                <option value="w6_hw3">第6周功課3</option>
+                <option value="w6_hw4">第6周功課4</option>
+              </optgroup>
+              <optgroup label="📅 第 4 周 倉頡手速賽 (過往記錄)">
+                <option value="w4_hw1">第4周功課1</option>
+                <option value="w4_hw2">第4周功課2</option>
+                <option value="w4_hw3">第4周功課3</option>
+                <option value="w4_hw4">第4周功課4</option>
+              </optgroup>
+              <optgroup label="📅 第 3 周 倉頡手速賽 (過往記錄)">
+                <option value="w3_hw1">第3周功課1</option>
+                <option value="w3_hw2">第3周功課2</option>
+                <option value="w3_hw3">第3周功課3</option>
+                <option value="w3_hw4">第3周功課4</option>
+              </optgroup>
+              <optgroup label="📅 第 2 周 倉頡手速賽 (過往記錄)">
+                <option value="w2_hw1">第2周功課1</option>
+                <option value="w2_hw2">第2周功課2</option>
+                <option value="w2_hw3">第2周功課3</option>
+                <option value="w2_hw4">第2周功課4</option>
+              </optgroup>
+            </select>
+          </div>
+          <div style="font-size: 12px; font-weight: 700; color: #64748B;">
+            ⚡ 官方賽制：<strong style="color: #2563EB;">純 10 字秒數競爭</strong>
+          </div>
+        </div>
+      </div>
+
+<div class="leaderboard-filter-tabs">
+        <button class="lb-filter-btn active" onclick="filterLeaderboard('ALL')">全級總榜</button>
+        <button class="lb-filter-btn" onclick="filterLeaderboard('P6A')">P6A 班</button>
+        <button class="lb-filter-btn" onclick="filterLeaderboard('P6B')">P6B 班</button>
+        <button class="lb-filter-btn" onclick="filterLeaderboard('P6C')">P6C 班</button>
+        <button class="lb-filter-btn" onclick="filterLeaderboard('P6D')">P6D 班</button>
+        <button class="lb-filter-btn" onclick="filterLeaderboard('P6E')">P6E 班</button>
+        <button class="lb-filter-btn" onclick="filterLeaderboard('P6F')">P6F 班</button>
+      </div>
+
+      <div style="max-height: 400px; overflow-y: auto;">
+        <table class="ref-table">
+          <thead>
+            <tr>
+              <th>排名</th>
+              <th>班別</th>
+              <th>學號</th>
+              <th>訓練家代號</th>
+              <th>勳章稱號</th>
+              <th>討伐總分</th>
+              <th>擊倒魔王</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboard-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. 勳章與技能館彈窗 -->
+  <div id="modal-skills" class="custom-modal-overlay" onclick="if(event.target===this)closeModal('modal-skills')">
+    <div class="custom-modal-dialog custom-modal-lg">
+      <div class="modal-header-flex">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 26px;">🎖️</span>
+          <h3 style="color: #1E3A8A; font-size: 20px; font-weight: 900;">寶可夢勳章與技能館 (0 ~ 100,000分)</h3>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('modal-skills')">✕</button>
+      </div>
+
+      <div class="skills-progress-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <div style="font-weight: 900; font-size: 15px; color: #1E3A8A;" id="hall-current-title">當前境界：🥉【新手訓練家】</div>
+          <div style="font-size: 13px; font-weight: 800; color: #D97706;" id="hall-current-pts">累積積分：0 / 下一階 50</div>
+        </div>
+        <div class="progress-track">
+          <div class="progress-bar" id="hall-progress-fill" style="width: 0%;"></div>
+        </div>
+      </div>
+
+      <h4 style="color: #1E3A8A; font-size: 15px; font-weight: 900; margin: 15px 0 10px;">🌟 14 大境界勳章展示牆 (登峰造極十萬階梯)</h4>
+      <div class="tiers-grid" id="tiers-grid-container"></div>
+
+      <h4 style="color: #1E3A8A; font-size: 15px; font-weight: 900; margin: 20px 0 10px;">⚡ 戰鬥隨機發動技能殿堂 (達成積分自動解鎖)</h4>
+      <div class="skills-grid" id="skills-grid-container">
+        <!-- 底部常駐顯著關閉按鈕 -->
+        <div style="margin-top: 24px; text-align: center; position: sticky; bottom: -24px; background: white; padding: 12px 0 6px; border-top: 2px dashed #E2E8F0; z-index: 99;">
+          <button class="btn-primary-action" onclick="closeModal('modal-skills')" style="padding: 10px 36px; font-size: 15px; font-weight: 900; background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%); border-radius: 25px; box-shadow: 0 4px 12px rgba(37,99,235,0.35); cursor: pointer;">
+            ✕ 關閉勳章技能館（返回首頁）
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Core -->
+  <!-- 🤖 六年級系統模組庫 (依賴順序外置載入，徹底根絕雙重維護) -->
+  <script src="js/config.js"></script>
+  <script src="js/cangjie.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
