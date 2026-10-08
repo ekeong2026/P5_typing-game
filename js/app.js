@@ -1696,6 +1696,7 @@ const SafeStorage = {
           if (Array.isArray(data.top40)) {
             DATA.top40 = data.top40;
             renderTop40();
+            renderClassBarCharts();
           }
           if (data.class_top10) DATA.class_top10 = data.class_top10;
           if (data.perfect_students) DATA.perfect_students = data.perfect_students;
