@@ -39,14 +39,11 @@ function doPost(e) {
   try {
     const payload = validate_(JSON.parse(e && e.postData ? e.postData.contents : '{}'));
     lock = LockService.getScriptLock();
-    lock.waitLock(20000);
+    lock.waitLock(30000);
     const sheet = book_().getSheetByName(LOG_SHEET);
     if (!sheet) throw new Error('請先執行 setup。');
     // 請求編號隨原成績保存；重試同一筆資料不會重複累計。
     if (hasRequestId_(sheet, payload.requestId)) {
-      // 上一次可能已寫入紀錄，但在更新總覽時中斷；重試時順道修復總覽。
-      writeSummary_();
-      clearDataCache_();
       return json_({ status: 'success', requestId: payload.requestId, duplicate: true });
     }
     const receivedAt = new Date();
@@ -56,7 +53,6 @@ function doPost(e) {
     ]);
     updateSummaryStudent_(payload, receivedAt);
     clearDataCache_();
-    SpreadsheetApp.flush();
     return json_({ status: 'success', requestId: payload.requestId });
   } catch (error) {
     return json_({ status: 'error', message: error.message });
@@ -71,6 +67,7 @@ function hasRequestId_(sheet, requestId) {
   return sheet.getRange(2, 1, lastRow - 1, 1)
     .createTextFinder(requestId)
     .matchEntireCell(true)
+    .matchCase(true)
     .findNext() !== null;
 }
 
