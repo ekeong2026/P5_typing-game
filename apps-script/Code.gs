@@ -200,8 +200,8 @@ function refreshSummary() {
 
 function writeSummary_() {
   const data = readData_();
-  const sheet = ensureSheet_(book_(), SUMMMARY_SHEET, SUMMARY_HEADERS);
-  // 成績總覽固定依 P5A–P5F、學號 1–36 排列，方便教師春是。
+  const sheet = ensureSheet_(book_(), SUMMARY_SHEET, SUMMARY_HEADERS);
+  // 成績總覽固定依 P5A–P5F、學號 1–36 排列，方便教師查閱。
   const students = data.combatLeaderboard.slice().sort((a, b) =>
     a.cls.localeCompare(b.cls) || a.num - b.num
   );
@@ -218,7 +218,7 @@ function updateSummaryStudent_(payload, receivedAt) {
   const rowNumber = 2 + classIndex * 36 + payload.num - 1;
   const current = sheet.getRange(rowNumber, 1, 1, SUMMARY_HEADERS.length).getValues()[0];
 
-  // 如渽覽排列書袮���口保動，先按原始紀錄安全重建，再取得正確的一行。
+  // 如總覽排列曾被人手改動，先按原始紀錄安全重建，再取得正確的一行。
   if (current[0] !== 5 || current[1] !== payload.cls || current[2] !== payload.num) {
     writeSummary_();
     return;
@@ -252,7 +252,7 @@ function ensureSheet_(book, name, headers) {
     sheet.setFrozenRows(1);
   } else {
     const actual = sheet.getRange(1, 1, 1, headers.length).getValues()[0];
-    if (headers.some((header, i) => actual[i] !== header)) throw new Error(name + ' 欄位不符缌诋另建成績試算表。');
+    if (headers.some((header, i) => actual[i] !== header)) throw new Error(name + ' 欄位不符，請另建成績試算表。');
   }
   return sheet;
 }
