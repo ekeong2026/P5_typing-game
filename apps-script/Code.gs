@@ -4,10 +4,13 @@
  */
 const LOG_SHEET = '遊戲紀錄';
 const SUMMARY_SHEET = '成績總覽';
+const DATA_CACHE_KEY = 'typing_game_leaderboard_v2';
+const DATA_CACHE_SECONDS = 30;
 const LOG_HEADERS = ['請求編號', '接收時間', '年級', '班別', '學號', '模式', '本次得分', '本次擊倒數', '完成秒數', '題量', '周次'];
 const SUMMARY_HEADERS = ['年級', '班別', '學號', '累計得分', '累計擊倒數', '連體字得分', '分體字得分', '特殊字得分', '最佳10字秒數', '最後接收時間'];
 
 function setup() {
+  // getActiveSpreadsheet 只在編輯器初始化使用；網頁接口改用已儲存的 ID。
   const book = SpreadsheetApp.getActiveSpreadsheet();
   if (!book) throw new Error('請從成績試算表的「擴充功能 → Apps Script」開啟並執行 setup。');
   PropertiesService.getScriptProperties().setProperty('SCORE_SPREADSHEET_ID', book.getId());
@@ -25,7 +28,7 @@ function doGet(e) {
     if (e && e.parameter && e.parameter.action && e.parameter.action !== 'get_data') {
       throw new Error('不支援的查詢。');
     }
-    return json_(readData_());
+    return json_(readDataCached_());
   } catch (error) {
     return json_({ status: 'error', message: error.message });
   }
@@ -39,12 +42,12 @@ function doPost(e) {
     lock.waitLock(20000);
     const sheet = book_().getSheetByName(LOG_SHEET);
     if (!sheet) throw new Error('請先執行 setup。');
-    if (sheet.getLastRow() > 1) {
-      const ids = sheet.getRange(2, 1, sheet.getLastRow() - 1, 1).getValues();
-      if (ids.some(row => row[0] === payload.requestId)) {
-        writeSummary_();
-        return json_({ status: 'success', requestId: payload.requestId, duplicate: true });
-      }
+    // 請求編號隨原成績保存；重試同一筆資料不會重複累計。
+    if (hasRequestId_(sheet, payload.requestId)) {
+      // 上一次可能已寫入紀錄，但在更新總覽時中斷；重試時順道修復總覽。
+      writeSummary_();
+      clearDataCache_();
+      return json_({ status: 'success', requestId: payload.requestId, duplicate: true });
     }
     const receivedAt = new Date();
     sheet.appendRow([
@@ -52,6 +55,7 @@ function doPost(e) {
       payload.scoreDelta, payload.killDelta, payload.bestTime, payload.wordCount, payload.weekKey
     ]);
     updateSummaryStudent_(payload, receivedAt);
+    clearDataCache_();
     SpreadsheetApp.flush();
     return json_({ status: 'success', requestId: payload.requestId });
   } catch (error) {
@@ -59,6 +63,15 @@ function doPost(e) {
   } finally {
     if (lock && lock.hasLock()) lock.releaseLock();
   }
+}
+
+function hasRequestId_(sheet, requestId) {
+  const lastRow = sheet.getLastRow();
+  if (lastRow <= 1) return false;
+  return sheet.getRange(2, 1, lastRow - 1, 1)
+    .createTextFinder(requestId)
+    .matchEntireCell(true)
+    .findNext() !== null;
 }
 
 function validate_(p) {
@@ -107,8 +120,10 @@ function readData_() {
   for (const row of rows) {
     const [id, received, grade, cls, num, mode, delta, kills, seconds, count, week] = row;
     const st = students[cls + '_' + num];
-    if (seen.has(id) || grade !== 5 || !st) continue;
-    seen.add(id);
+    const normalizedId = String(id || '').trim();
+    // 新紀錄以 requestId 去重；沒有 ID 的歷史列則逐筆保留及計算。
+    if ((normalizedId && seen.has(normalizedId)) || grade !== 5 || !st) continue;
+    if (normalizedId) seen.add(normalizedId);
     st.grandTotal += Number(delta) || 0;
     st.kills += Number(kills) || 0;
     const modeField = { connected: 'mode1Score', split: 'mode2Score', special: 'mode3Score' }[mode];
@@ -129,6 +144,7 @@ function readData_() {
     st.score = st.totalScore = st.grandTotal;
   }
   const combatLeaderboard = Object.values(students).sort((a, b) => b.grandTotal - a.grandTotal || a.cls.localeCompare(b.cls) || a.num - b.num);
+  // 依周次分組，避免另一周的最佳秒數混入當周榜單。
   const speedByWeek = { overall: [] };
   const overall = {};
   for (const record of Object.values(best)) {
@@ -147,6 +163,31 @@ function readData_() {
     top40: combatLeaderboard.filter(st => st.grandTotal > 0).slice(0, 40), class_top10 };
 }
 
+function readDataCached_() {
+  const cache = CacheService.getScriptCache();
+  try {
+    const cached = cache.get(DATA_CACHE_KEY);
+    if (cached) return JSON.parse(cached);
+  } catch (error) {
+    // 快取失效時仍可直接讀取試算表，不影響排行榜。
+  }
+  const data = readData_();
+  try {
+    cache.put(DATA_CACHE_KEY, JSON.stringify(data), DATA_CACHE_SECONDS);
+  } catch (error) {
+    // 資料超過快取限制時，退回即時計算。
+  }
+  return data;
+}
+
+function clearDataCache_() {
+  try {
+    CacheService.getScriptCache().remove(DATA_CACHE_KEY);
+  } catch (error) {
+    // 清除快取失敗不應阻止成績寫入。
+  }
+}
+
 function refreshSummary() {
   const lock = LockService.getScriptLock();
   lock.waitLock(20000);
@@ -159,13 +200,15 @@ function refreshSummary() {
 
 function writeSummary_() {
   const data = readData_();
-  const sheet = ensureSheet_(book_(), SUMMARY_SHEET, SUMMARY_HEADERS);
+  const sheet = ensureSheet_(book_(), SUMMMARY_SHEET, SUMMARY_HEADERS);
+  // 成績總覽固定依 P5A–P5F、學號 1–36 排列，方便教師春是。
   const students = data.combatLeaderboard.slice().sort((a, b) =>
     a.cls.localeCompare(b.cls) || a.num - b.num
   );
   const rows = students.map(st => [5, st.cls, st.num, st.grandTotal, st.kills,
     st.mode1Score, st.mode2Score, st.mode3Score, st.best10 === null ? '' : st.best10, st.lastTime]);
   sheet.getRange(2, 1, rows.length, SUMMARY_HEADERS.length).setValues(rows);
+  clearDataCache_();
   SpreadsheetApp.flush();
 }
 
@@ -174,10 +217,13 @@ function updateSummaryStudent_(payload, receivedAt) {
   const classIndex = payload.cls.charCodeAt(2) - 'A'.charCodeAt(0);
   const rowNumber = 2 + classIndex * 36 + payload.num - 1;
   const current = sheet.getRange(rowNumber, 1, 1, SUMMARY_HEADERS.length).getValues()[0];
+
+  // 如渽覽排列書袮���口保動，先按原始紀錄安全重建，再取得正確的一行。
   if (current[0] !== 5 || current[1] !== payload.cls || current[2] !== payload.num) {
     writeSummary_();
     return;
   }
+
   const updated = current.slice();
   updated[3] = (Number(current[3]) || 0) + payload.scoreDelta;
   updated[4] = (Number(current[4]) || 0) + payload.killDelta;
@@ -206,7 +252,7 @@ function ensureSheet_(book, name, headers) {
     sheet.setFrozenRows(1);
   } else {
     const actual = sheet.getRange(1, 1, 1, headers.length).getValues()[0];
-    if (headers.some((header, i) => actual[i] !== header)) throw new Error(name + ' 欄位不符，請另建成績試算表。');
+    if (headers.some((header, i) => actual[i] !== header)) throw new Error(name + ' 欄位不符缌诋另建成績試算表。');
   }
   return sheet;
 }
