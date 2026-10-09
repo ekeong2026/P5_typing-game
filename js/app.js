@@ -618,7 +618,7 @@ const SafeStorage = {
               </div>
               <div>
                 <div class="st-name">
-                  # ${formatStudentDisplayName(s)} <span class="st-poke-tag">${pm.name}</span>
+                  #${s.rank || idx + 1} ${formatStudentDisplayName(s)} <span class="st-poke-tag">${pm.name}</span>
                   ${isElite ? '<span class="badge-elite-top10">✨ TOP 10 菁英</span>' : ''}
                 </div>
                 <div class="st-class">${s.cls} · ${s.num}號 · 夥伴：${pm.name} (${pm.tag})</div>
@@ -683,7 +683,7 @@ const SafeStorage = {
               </div>
               <div>
                 <div class="st-name">
-                  ${medal}# ${formatStudentDisplayName(s)} <span class="st-poke-tag">${pm.name}</span>
+                  ${medal}#${s.rank || idx + 1} ${formatStudentDisplayName(s)} <span class="st-poke-tag">${pm.name}</span>
                   ${honorBadge}
                 </div>
                 <div class="st-class">${currentClass} · ${s.num}號 · 夥伴：${pm.name} (${pm.tag})</div>
@@ -1698,8 +1698,15 @@ const SafeStorage = {
             renderTop40();
             renderClassBarCharts();
           }
-          {            const scoreRows = Array.isArray(data.combatLeaderboard) ? data.combatLeaderboard : [];            const validScores = scoreRows.map(s => Number(s.grandTotal ?? s.total ?? s.score ?? 0)).filter(Number.isFinite);            const speedRows = (data.speedByWeek && Array.isArray(data.speedByWeek.overall)) ? data.speedByWeek.overall : [];            const fastest = speedRows.filter(s => Number(s.bestTime) > 0).sort((a, b) => Number(a.bestTime) - Number(b.bestTime))[0];            const perfectSource = data.perfect_students || DATA.perfect_students || {};            const perfectGroups = typeof perfectSource === 'object' ? Object.values(perfectSource) : [];            data.stats = {              perfectCount: perfectGroups.reduce((sum, group) => sum + (Array.isArray(group) ? group.length : 0), 0),              avgScore: validScores.length ? Math.round(validScores.reduce((sum, score) => sum + score, 0) / validScores.length) : 0,              speedKing: fastest ? `${formatStudentDisplayName(fastest)} · ${Number(fastest.bestTime).toFixed(2)}秒` : '暫未有手速紀錄',              ...(data.stats || {})            };          }          if (data.stats) {
-          if (data.class_top10) {            DATA.class_top10 = data.class_top10;            renderClassCards();          }
+          if (data.class_top10) {
+            DATA.class_top10 = data.class_top10;
+            renderClassCards();
+          }
+          if (data.perfect_students) {
+            DATA.perfect_students = data.perfect_students;
+            renderPerfectScorers();
+          }
+          renderClassBarCharts();
 
           // 2. 🛡️ 方案 A 核心：動態由雲端載入本週及全部正式題庫 (GitHub 完全不公開)
           if (data.weeklyBanks && typeof data.weeklyBanks === 'object' && Object.keys(data.weeklyBanks).length > 0) {
@@ -1734,7 +1741,21 @@ const SafeStorage = {
           renderSpeedLeaderboardTable();
 
           // 4. 更新頂部數據統計條
-          ${s.rank || idx + 1}
+          {
+            const scoreRows = Array.isArray(data.combatLeaderboard) ? data.combatLeaderboard : [];
+            const validScores = scoreRows.map(s => Number(s.grandTotal ?? s.total ?? s.score ?? 0)).filter(Number.isFinite);
+            const speedRows = (data.speedByWeek && Array.isArray(data.speedByWeek.overall)) ? data.speedByWeek.overall : [];
+            const fastest = speedRows.filter(s => Number(s.bestTime) > 0).sort((a, b) => Number(a.bestTime) - Number(b.bestTime))[0];
+            const perfectSource = data.perfect_students || DATA.perfect_students || {};
+            const perfectGroups = typeof perfectSource === 'object' ? Object.values(perfectSource) : [];
+            data.stats = {
+              perfectCount: perfectGroups.reduce((sum, group) => sum + (Array.isArray(group) ? group.length : 0), 0),
+              avgScore: validScores.length ? Math.round(validScores.reduce((sum, score) => sum + score, 0) / validScores.length) : 0,
+              speedKing: fastest ? `${formatStudentDisplayName(fastest)} · ${Number(fastest.bestTime).toFixed(2)}秒` : '暫未有手速紀錄',
+              ...(data.stats || {})
+            };
+          }
+          if (data.stats) {
             const pCountEl = document.querySelector('.stat-pill:nth-child(1)');
             if (pCountEl && data.stats.perfectCount !== undefined) {
               pCountEl.innerHTML = `🎉 滿分訓練家：<strong>${data.stats.perfectCount} 位同學獲得 400 分！</strong>`;
@@ -3069,4 +3090,3 @@ const SafeStorage = {
     if (document.readyState === 'complete' || document.readyState === 'interactive') {
       try { initSpeedWeekDropdown(); } catch(e) {}
     }
-
